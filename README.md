@@ -195,6 +195,7 @@ export default defineConfig({
 - **React Markdown** - Markdown rendering
 - **GitHub Actions** - Automatic deployment
 - **GitHub Pages** - Free hosting
+- **NPM** - Package manager
 
 ## License
 
@@ -203,3 +204,8 @@ MIT License - feel free to use this for your own blog!
 ---
 
 Happy blogging! 🚀
+
+## Todo
+- cheap pagination
+- show preview images
+- show created and updated dates of post
