@@ -26,7 +26,7 @@ const calculateNextNumber = () => {
 
 const handleNewPost = () => {
   const paddedNumber = calculateNextNumber().toString().padStart(3, "0");
-  const suggestedFilename = `${paddedNumber}-new-post.md`;
+  const suggestedFilename = `${paddedNumber}.md`;
   const newPostUrl = generateNewPostUrl(suggestedFilename);
 
   if (!newPostUrl) {

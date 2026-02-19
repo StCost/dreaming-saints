@@ -38,7 +38,7 @@ A super quick and simple GitHub Pages blog built with Vite + React, featuring da
 ### Method 1: Manual File Creation
 
 1. Create a new markdown file in `src/posts/`
-2. Name it with a number prefix: `004-my-new-post.md`
+2. Name it with a number prefix: `004.md`
 3. Higher numbers appear first in the list
 4. Posts are automatically discovered and imported - no manual updates needed!
 
@@ -46,7 +46,7 @@ A super quick and simple GitHub Pages blog built with Vite + React, featuring da
 
 1. Click the "New Post" button at the bottom of the home page
 2. This opens GitHub's file creation interface with a pre-filled filename
-3. The filename is automatically numbered (e.g., `004-new-post.md`) based on existing posts
+3. The filename is automatically numbered (e.g., `004.md`) based on existing posts
 4. Write your post in markdown format
 5. Commit the changes - GitHub handles the rest!
 
