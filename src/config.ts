@@ -24,6 +24,7 @@ export const config: Config = {
   blog: {
     postsDirectory: "../posts",
     excerptLength: 100,
+    postsPerPage: 10, // 0 or omit to show all
   },
 };
 

@@ -1,8 +1,85 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import config from "../config";
-import { BlogPost, BlogPostMeta } from "../types";
+import { BlogPost, BlogPostListItem, BlogPostMeta } from "../types";
 
 const postFiles = import.meta.glob("../posts/*.md", { as: "raw" });
+// In dev, public is at root; in prod, use base (e.g. /blog/)
+const PAGES_BASE =
+  import.meta.env.DEV ? "" : (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+const pagesUrl = (path: string) => `${PAGES_BASE}/pages/${path}`;
+
+type PagesMeta = { totalPages: number; postsPerPage: number };
+
+export function useBlogListPage(page: number): {
+  posts: BlogPostListItem[];
+  totalPages: number;
+  loading: boolean;
+  error: string | null;
+} {
+  const [meta, setMeta] = useState<PagesMeta | null>(null);
+  const [pageData, setPageData] = useState<{
+    page: number;
+    posts: BlogPostListItem[];
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const metaFetched = useRef(false);
+
+  // Fetch meta once
+  useEffect(() => {
+    if (metaFetched.current) return;
+    metaFetched.current = true;
+    fetch(pagesUrl("meta.json"))
+      .then((r) => {
+        if (!r.ok) throw new Error("Failed to load pages meta");
+        return r.json();
+      })
+      .then(setMeta)
+      .catch((e) => {
+        setError(e instanceof Error ? e.message : "Failed to load");
+        setMeta({ totalPages: 0, postsPerPage: 10 });
+      });
+  }, []);
+
+  // Fetch current page when meta is ready
+  useEffect(() => {
+    if (!meta) return;
+    setLoading(true);
+    setError(null);
+    const safePage = Math.max(
+      1,
+      Math.min(page, meta.totalPages || 1),
+    );
+    if (meta.totalPages === 0) {
+      setPageData({ page: 1, posts: [] });
+      setLoading(false);
+      return;
+    }
+    fetch(pagesUrl(`${safePage}.json`))
+      .then((r) => {
+        if (!r.ok) throw new Error("Failed to load page");
+        return r.json();
+      })
+      .then((data) => {
+        setPageData({ page: data.page, posts: data.posts || [] });
+      })
+      .catch((e) => {
+        setError(e instanceof Error ? e.message : "Failed to load page");
+        setPageData({ page: safePage, posts: [] });
+      })
+      .finally(() => setLoading(false));
+  }, [meta, page]);
+
+  const totalPages = meta?.totalPages ?? 0;
+  const posts = pageData?.page === page ? pageData.posts : [];
+
+  return {
+    posts,
+    totalPages: totalPages || 1,
+    loading,
+    error,
+  };
+}
 
 const extractPostMeta = (content: string): BlogPostMeta => {
   const lines = content.split("\n");
@@ -23,43 +100,6 @@ const extractPostMeta = (content: string): BlogPostMeta => {
       : config.ui.defaultExcerpt
   ).replace(/\*\*/g, "");
   return { title, excerpt };
-};
-
-const loadPosts = async (): Promise<BlogPost[]> =>
-  (
-    (
-      await Promise.allSettled(
-        Object.entries(postFiles).map(async ([path, loader]) => {
-          const filename = path.split("/").pop();
-          if (!filename) throw new Error("Invalid filename");
-
-          const content = await loader();
-          const { title, excerpt } = extractPostMeta(content);
-
-          return {
-            filename,
-            title,
-            excerpt,
-            content,
-          };
-        }),
-      )
-    )
-      .map((result) => (result.status === "fulfilled" ? result.value : null))
-      .filter(Boolean) as BlogPost[]
-  ).sort((a, b) => b.filename.localeCompare(a.filename)); // later letter first, or bigger number first (prefer numbers in name)
-
-const usePosts = (): { posts: BlogPost[]; loading: boolean } => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    loadPosts()
-      .then(setPosts)
-      .finally(() => setLoading(false));
-  }, []);
-
-  return { posts, loading };
 };
 
 const usePostByFilename = (filename: string | undefined) => {
@@ -106,5 +146,4 @@ const usePostByFilename = (filename: string | undefined) => {
   return { content, title: postTitle, loading, error };
 };
 
-export { usePostByFilename, usePosts };
-
+export { usePostByFilename };

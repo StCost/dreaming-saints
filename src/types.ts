@@ -12,6 +12,13 @@ export interface BlogPostMeta {
   excerpt: string;
 }
 
+/** Post list item (no content); from generated pages/N.json */
+export interface BlogPostListItem {
+  filename: string;
+  title: string;
+  excerpt: string;
+}
+
 export interface SiteConfig {
   title: string;
   tagline: string;
@@ -30,6 +37,8 @@ export interface UIConfig {
 export interface BlogConfig {
   postsDirectory: string;
   excerptLength: number;
+  /** Max posts per page; 0 or undefined = show all (no pagination) */
+  postsPerPage?: number;
 }
 
 export interface Config {
