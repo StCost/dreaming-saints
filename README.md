@@ -209,3 +209,4 @@ Happy blogging! 🚀
 - cheap pagination
 - show preview images
 - show created and updated dates of post
+- shared link of post must preview title and content
