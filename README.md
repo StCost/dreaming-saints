@@ -206,6 +206,6 @@ MIT License - feel free to use this for your own blog!
 Happy blogging! 🚀
 
 ## Todo
-- show preview images
 - show created and updated dates of post
 - shared link of post must preview title and content
+- show post number instead of default title

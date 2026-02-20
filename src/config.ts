@@ -18,7 +18,6 @@ export const config: Config = {
     noPosts: "No posts found. Add some .md files to public/posts/ directory!",
     backToPosts: "← Back to posts",
     defaultTitle: "Untitled Post",
-    defaultExcerpt: "No excerpt available...",
   },
 
   blog: {

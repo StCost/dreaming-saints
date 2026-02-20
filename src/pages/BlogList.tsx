@@ -43,7 +43,19 @@ const BlogList = () => {
                   <li className="post-item">
                     <small className="post-filename">{post.filename}</small>
                     <h2 className="post-title">{post.title}</h2>
-                    <p className="post-excerpt">{post.excerpt}</p>
+                    {post.previewImage && (
+                      <div className="post-preview-image-wrap">
+                        <img
+                          src={post.previewImage}
+                          alt=""
+                          className="post-preview-image"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                    {post.excerpt && (
+                      <p className="post-excerpt">{post.excerpt}</p>
+                    )}
                   </li>
                 </Link>
               ))}

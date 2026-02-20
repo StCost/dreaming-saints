@@ -6,6 +6,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { extractFirstImageUrl, isImageLine } from "../src/helpers/postMeta.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -13,7 +14,6 @@ const postsDir = path.join(root, "src", "posts");
 const outDir = path.join(root, "public", "pages");
 
 const DEFAULT_TITLE = "Untitled Post";
-const DEFAULT_EXCERPT = "No excerpt available...";
 
 function readBlogConfig() {
   const configPath = path.join(root, "src", "config.ts");
@@ -38,14 +38,14 @@ function extractMeta(content, excerptLength) {
   const afterTitle = lines.findIndex((line) => line.startsWith("# ")) + 1;
   const contentLines = lines.slice(afterTitle);
   const firstParagraph = contentLines.find(
-    (line) => line.trim() && !line.startsWith("#"),
+    (line) =>
+      line.trim() && !line.startsWith("#") && !isImageLine(line),
   );
-  const excerpt = (
-    firstParagraph
-      ? firstParagraph.trim().substring(0, excerptLength) + "..."
-      : DEFAULT_EXCERPT
-  ).replace(/\*\*/g, "");
-  return { title, excerpt };
+  const excerpt = firstParagraph
+    ? firstParagraph.trim().substring(0, excerptLength).replace(/\*\*/g, "") + "..."
+    : undefined;
+  const previewImage = extractFirstImageUrl(content);
+  return { title, ...(excerpt && { excerpt }), ...(previewImage && { previewImage }) };
 }
 
 export function generatePages() {
@@ -69,8 +69,8 @@ export function generatePages() {
       path.join(postsDir, filename),
       "utf-8",
     );
-    const { title, excerpt } = extractMeta(content, excerptLength);
-    return { filename, title, excerpt };
+    const { title, excerpt, previewImage } = extractMeta(content, excerptLength);
+    return { filename, title, ...(excerpt && { excerpt }), ...(previewImage && { previewImage }) };
   });
 
   const totalPages = Math.max(

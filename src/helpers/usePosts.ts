@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import config from "../config";
+import { isImageLine } from "./postMeta";
 import { BlogPost, BlogPostListItem, BlogPostMeta } from "../types";
 
 const postFiles = import.meta.glob("../posts/*.md", { as: "raw" });
@@ -81,6 +82,7 @@ export function useBlogListPage(page: number): {
   };
 }
 
+/** Uses shared postMeta helpers so excerpt/image logic matches build script. */
 const extractPostMeta = (content: string): BlogPostMeta => {
   const lines = content.split("\n");
   const titleLine = lines.find((line) => line.startsWith("# "));
@@ -92,14 +94,13 @@ const extractPostMeta = (content: string): BlogPostMeta => {
     lines.findIndex((line) => line.startsWith("# ")) + 1,
   );
   const firstParagraph = contentLines.find(
-    (line) => line.trim() && !line.startsWith("#"),
+    (line) =>
+      line.trim() && !line.startsWith("#") && !isImageLine(line),
   );
-  const excerpt = (
-    firstParagraph
-      ? firstParagraph.trim().substring(0, config.blog.excerptLength) + "..."
-      : config.ui.defaultExcerpt
-  ).replace(/\*\*/g, "");
-  return { title, excerpt };
+  const excerpt = firstParagraph
+    ? firstParagraph.trim().substring(0, config.blog.excerptLength).replace(/\*\*/g, "") + "..."
+    : undefined;
+  return { title, ...(excerpt && { excerpt }) };
 };
 
 const usePostByFilename = (filename: string | undefined) => {

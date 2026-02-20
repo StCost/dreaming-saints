@@ -9,14 +9,17 @@ export interface BlogPost {
 
 export interface BlogPostMeta {
   title: string;
-  excerpt: string;
+  excerpt?: string;
 }
 
 /** Post list item (no content); from generated pages/N.json */
 export interface BlogPostListItem {
   filename: string;
   title: string;
-  excerpt: string;
+  /** Omitted when post has no text paragraph for excerpt */
+  excerpt?: string;
+  /** First image URL from post content, for list preview */
+  previewImage?: string;
 }
 
 export interface SiteConfig {
@@ -31,7 +34,6 @@ export interface UIConfig {
   noPosts: string;
   backToPosts: string;
   defaultTitle: string;
-  defaultExcerpt: string;
 }
 
 export interface BlogConfig {
