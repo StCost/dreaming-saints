@@ -6,9 +6,9 @@ import { Config } from "./types";
 
 export const config: Config = {
   site: {
-    title: "🎊 COLLAPSE MACHINE 🚘",
+    title: "COLLAPSE MACHINE",
     tagline:
-      "✨ Dreaming Saints 👼 studio, developing my co-op FPS open world dream-game",
+      "👼 Dreaming Saints 👼 studio, developing my co-op FPS open world dream-game",
   },
 
   ui: {
