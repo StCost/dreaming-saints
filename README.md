@@ -204,6 +204,3 @@ MIT License - feel free to use this for your own blog!
 ---
 
 Happy blogging! 🚀
-
-## Todo
-- shared link of post must preview title and content
