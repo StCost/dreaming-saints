@@ -6,14 +6,12 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { extractFirstImageUrl, isImageLine } from "../src/helpers/postMeta.js";
+import { extractFirstImageUrl, isImageLine, titleFromFilename } from "../src/helpers/postMeta";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const postsDir = path.join(root, "src", "posts");
 const outDir = path.join(root, "public", "pages");
-
-const DEFAULT_TITLE = "Untitled Post";
 
 function readBlogConfig() {
   const configPath = path.join(root, "src", "config.ts");
@@ -29,12 +27,12 @@ function readBlogConfig() {
   return { postsPerPage: postsPerPage || 10, excerptLength: excerptLength || 100 };
 }
 
-function extractMeta(content, excerptLength) {
+function extractMeta(content, excerptLength, filename) {
   const lines = content.split("\n");
   const titleLine = lines.find((line) => line.startsWith("# "));
   const title = titleLine
     ? titleLine.replace("# ", "").trim()
-    : DEFAULT_TITLE;
+    : titleFromFilename(filename || "");
   const afterTitle = lines.findIndex((line) => line.startsWith("# ")) + 1;
   const contentLines = lines.slice(afterTitle);
   const firstParagraph = contentLines.find(
@@ -69,7 +67,7 @@ export function generatePages() {
       path.join(postsDir, filename),
       "utf-8",
     );
-    const { title, excerpt, previewImage } = extractMeta(content, excerptLength);
+    const { title, excerpt, previewImage } = extractMeta(content, excerptLength, filename);
     return { filename, title, ...(excerpt && { excerpt }), ...(previewImage && { previewImage }) };
   });
 

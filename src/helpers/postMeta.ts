@@ -5,12 +5,26 @@
  */
 
 /**
+ * Derive a display title from post filename (e.g. "013-new-post.md" → "13 New post").
+ */
+export function titleFromFilename(filename: string): string {
+  const base = filename.replace(/\.md$/i, "").trim();
+  const match = base.match(/^(\d+)-(.*)$/);
+  if (match) {
+    const num = parseInt(match[1], 10);
+    const slug = match[2].replace(/-/g, " ").trim();
+    const text = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : "";
+    return text ? `${num} ${text}` : String(num);
+  }
+  const fallback = base.replace(/-/g, " ").trim();
+  return fallback ? fallback.charAt(0).toUpperCase() + fallback.slice(1) : base;
+}
+
+/**
  * Extract first image URL from post content.
  * Supports: markdown ![alt](url), HTML <img ... src="url" ...>
- * @param {string} content - Raw post body
- * @returns {string|null} First image URL or null
  */
-export function extractFirstImageUrl(content) {
+export function extractFirstImageUrl(content: string): string | null {
   const mdMatch = content.match(/!\[[^\]]*\]\(([^)]+)\)/);
   if (mdMatch) return mdMatch[1].trim();
   const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/);
@@ -21,10 +35,8 @@ export function extractFirstImageUrl(content) {
 /**
  * True if the line is only an image (markdown or HTML img).
  * Used to skip image lines when picking the first text paragraph for excerpt.
- * @param {string} line - Single line of content
- * @returns {boolean}
  */
-export function isImageLine(line) {
+export function isImageLine(line: string): boolean {
   const t = line.trim();
   return /^\s*!\[[^\]]*\]\([^)]+\)\s*$/.test(t) || /<img[^>]+src=/.test(t);
 }

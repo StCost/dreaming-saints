@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import config from "../config";
-import { isImageLine } from "./postMeta";
-import { BlogPost, BlogPostListItem, BlogPostMeta } from "../types";
+import { BlogPostListItem } from "../types";
+import { titleFromFilename } from "./postMeta";
 
 const postFiles = import.meta.glob("../posts/*.md", { as: "raw" });
 // In dev, public is at root; in prod, use base (e.g. /blog/)
@@ -82,27 +82,6 @@ export function useBlogListPage(page: number): {
   };
 }
 
-/** Uses shared postMeta helpers so excerpt/image logic matches build script. */
-const extractPostMeta = (content: string): BlogPostMeta => {
-  const lines = content.split("\n");
-  const titleLine = lines.find((line) => line.startsWith("# "));
-  const title = titleLine
-    ? titleLine.replace("# ", "").trim()
-    : config.ui.defaultTitle;
-
-  const contentLines = lines.slice(
-    lines.findIndex((line) => line.startsWith("# ")) + 1,
-  );
-  const firstParagraph = contentLines.find(
-    (line) =>
-      line.trim() && !line.startsWith("#") && !isImageLine(line),
-  );
-  const excerpt = firstParagraph
-    ? firstParagraph.trim().substring(0, config.blog.excerptLength).replace(/\*\*/g, "") + "..."
-    : undefined;
-  return { title, ...(excerpt && { excerpt }) };
-};
-
 const usePostByFilename = (filename: string | undefined) => {
   const [content, setContent] = useState<string>("");
   const [postTitle, setPostTitle] = useState<string>("");
@@ -126,9 +105,9 @@ const usePostByFilename = (filename: string | undefined) => {
         const content = await postFiles[postPath]();
         setContent(content);
 
-        // Extract title from markdown content (first # heading)
+        // Extract title from first # heading, or from filename (e.g. 013-new-post.md → "13 New post")
         const titleMatch = content.match(/^#\s+(.+)$/m);
-        const title = titleMatch ? titleMatch[1] : config.ui.defaultTitle;
+        const title = titleMatch ? titleMatch[1].trim() : titleFromFilename(`${filename}.md`);
         setPostTitle(title);
       } catch (err) {
         const errorMessage =

@@ -33,7 +33,6 @@ export interface UIConfig {
   postNotFound: string;
   noPosts: string;
   backToPosts: string;
-  defaultTitle: string;
 }
 
 export interface BlogConfig {
