@@ -53,6 +53,19 @@ const BlogList = () => {
                         />
                       </div>
                     )}
+                    {post.previewYouTubeId && (
+                      <div className="youtube-embed">
+                        <iframe
+                          src={`https://www.youtube.com/embed/${post.previewYouTubeId}`}
+                          title="YouTube video"
+                          width="560"
+                          height="315"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      </div>
+                    )}
                     {post.excerpt && (
                       <p className="post-excerpt">{post.excerpt}</p>
                     )}

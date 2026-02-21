@@ -6,12 +6,37 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { extractFirstImageUrl, isImageLine, titleFromFilename } from "../src/helpers/postMeta";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const postsDir = path.join(root, "src", "posts");
 const outDir = path.join(root, "public", "pages");
+
+function titleFromFilename(filename) {
+  const base = filename.replace(/\.md$/i, "").trim();
+  const match = base.match(/^(\d+)-(.*)$/);
+  if (match) {
+    const num = parseInt(match[1], 10);
+    const slug = match[2].replace(/-/g, " ").trim();
+    const text = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : "";
+    return text ? `${num} ${text}` : String(num);
+  }
+  const fallback = base.replace(/-/g, " ").trim();
+  return fallback ? fallback.charAt(0).toUpperCase() + fallback.slice(1) : base;
+}
+
+function extractFirstImageUrl(content) {
+  const mdMatch = content.match(/!\[[^\]]*\]\(([^)]+)\)/);
+  if (mdMatch) return mdMatch[1].trim();
+  const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/);
+  if (imgMatch) return imgMatch[1].trim();
+  return null;
+}
+
+function isImageLine(line) {
+  const t = line.trim();
+  return /^\s*!\[[^\]]*\]\([^)]+\)\s*$/.test(t) || /<img[^>]+src=/.test(t);
+}
 
 function readBlogConfig() {
   const configPath = path.join(root, "src", "config.ts");
@@ -27,6 +52,16 @@ function readBlogConfig() {
   return { postsPerPage: postsPerPage || 10, excerptLength: excerptLength || 100 };
 }
 
+const YOUTUBE_WATCH = /^https:\/\/(?:www\.)?youtube\.com\/watch\?v=([A-Za-z0-9_-]{11})$/;
+const YOUTUBE_SHORT = /^https:\/\/youtu\.be\/([A-Za-z0-9_-]{11})$/;
+
+function extractFirstYouTubeId(line) {
+  const t = line.trim();
+  const watch = t.match(YOUTUBE_WATCH);
+  const short = t.match(YOUTUBE_SHORT);
+  return watch ? watch[1] : short ? short[1] : null;
+}
+
 function extractMeta(content, excerptLength, filename) {
   const lines = content.split("\n");
   const titleLine = lines.find((line) => line.startsWith("# "));
@@ -39,11 +74,18 @@ function extractMeta(content, excerptLength, filename) {
     (line) =>
       line.trim() && !line.startsWith("#") && !isImageLine(line),
   );
-  const excerpt = firstParagraph
-    ? firstParagraph.trim().substring(0, excerptLength).replace(/\*\*/g, "") + "..."
-    : undefined;
+  const previewYouTubeId = firstParagraph ? extractFirstYouTubeId(firstParagraph) : null;
+  const excerpt =
+    !previewYouTubeId && firstParagraph
+      ? firstParagraph.trim().substring(0, excerptLength).replace(/\*\*/g, "") + "..."
+      : undefined;
   const previewImage = extractFirstImageUrl(content);
-  return { title, ...(excerpt && { excerpt }), ...(previewImage && { previewImage }) };
+  return {
+    title,
+    ...(excerpt && { excerpt }),
+    ...(previewImage && { previewImage }),
+    ...(previewYouTubeId && { previewYouTubeId }),
+  };
 }
 
 export function generatePages() {
@@ -67,8 +109,14 @@ export function generatePages() {
       path.join(postsDir, filename),
       "utf-8",
     );
-    const { title, excerpt, previewImage } = extractMeta(content, excerptLength, filename);
-    return { filename, title, ...(excerpt && { excerpt }), ...(previewImage && { previewImage }) };
+    const { title, excerpt, previewImage, previewYouTubeId } = extractMeta(content, excerptLength, filename);
+    return {
+      filename,
+      title,
+      ...(excerpt && { excerpt }),
+      ...(previewImage && { previewImage }),
+      ...(previewYouTubeId && { previewYouTubeId }),
+    };
   });
 
   const totalPages = Math.max(

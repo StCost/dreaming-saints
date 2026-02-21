@@ -20,6 +20,8 @@ export interface BlogPostListItem {
   excerpt?: string;
   /** First image URL from post content, for list preview */
   previewImage?: string;
+  /** First YouTube video ID when first content line is a YouTube URL, for list preview */
+  previewYouTubeId?: string;
 }
 
 export interface SiteConfig {
