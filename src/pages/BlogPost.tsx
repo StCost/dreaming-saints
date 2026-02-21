@@ -1,6 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { Link, useParams } from "react-router-dom";
+import CodeBlock from "../components/CodeBlock";
 import GitHubEditButton from "../components/GitHubEditButton";
 import ShareButton from "../components/ShareButton";
 import config from "../config";
@@ -82,7 +83,10 @@ const BlogPost = () => {
         <small className="post-filename">
           <GitHubEditButton filename={`${filename}.md`} />
         </small>
-        <ReactMarkdown rehypePlugins={[rehypeRaw as never]}>
+        <ReactMarkdown
+          rehypePlugins={[rehypeRaw as never]}
+          components={{ pre: CodeBlock as never }}
+        >
           {replaceYouTubeUrls(replaceImageTags(content))}
         </ReactMarkdown>
         <div className="post-actions">
