@@ -6,16 +6,16 @@ import { Config } from "./types";
 
 export const config: Config = {
   site: {
-    title: "COLLAPSE MACHINE",
+    title: "👼 Dreaming Saints 👼",
     tagline:
-      "👼 Dreaming Saints 👼 studio, developing my co-op FPS open world dream-game",
+      "Developing 🚕 COLLAPSE MACHINE 💥, a co-op FPS open world dream-game",
   },
 
   ui: {
     loadingPosts: "Loading blessed posts...",
     loadingPost: "Loading post...",
     postNotFound: "Post not found",
-    noPosts: "No posts found. Add some .md files to public/posts/ directory!",
+    noPosts: "No posts found",
     backToPosts: "← Back to posts",
   },
 
