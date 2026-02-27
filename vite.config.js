@@ -1,6 +1,6 @@
+import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
-import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { generatePages } from "./scripts/generate-pages.js";
 
@@ -41,7 +41,7 @@ export default defineConfig({
       jsxRuntime: "automatic",
     }),
   ],
-  base: "/blog/",
+  base: "/dreaming-saints/",
   server: {
     port: 3000,
   },
