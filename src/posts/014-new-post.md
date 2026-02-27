@@ -1,4 +1,4 @@
-# The Hidden Complexity of Procedural Agent Spawning
+# #9 The Hidden Complexity of Procedural Agent Spawning
 
 ## The Problem
 

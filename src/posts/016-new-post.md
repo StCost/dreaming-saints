@@ -1,4 +1,4 @@
-# Research Document: Lightning-Powered Barrel Charging Mechanism
+# #10 Research Document: Lightning-Powered Barrel Charging Mechanism
 
 ## Abstract
 This document outlines the proposed design and operational framework of the **Lightning Barrel Charging Mechanism** (LBCM). The system captures high-voltage atmospheric discharges and converts them into safely stored energy within modular **power barrels**. Each barrel is independently chargeable, using a randomized selection and interval pattern to prevent grid overload and structural failure.  

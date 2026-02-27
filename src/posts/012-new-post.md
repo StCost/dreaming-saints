@@ -1,4 +1,4 @@
-# Creating Dynamic Inventory Icons at Runtime in Unity: A Journey Through Camera Rendering and UI Optimization
+# #7 Creating Dynamic Inventory Icons at Runtime in Unity: A Journey Through Camera Rendering and UI Optimization
 
 *A technical deep-dive into generating real-time item icons for game inventories using Unity's HDRP and camera rendering systems*
 

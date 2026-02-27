@@ -1,4 +1,4 @@
-# COLLAPSE MACHINE Update: New Chat System & Developer Tools
+# #1 COLLAPSE MACHINE Update: New Chat System & Developer Tools
 
 ## What's New
 

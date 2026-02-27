@@ -1,4 +1,4 @@
-# 💥 Collapse Machine: Lore, Industries, and World Design
+# #2 💥 Collapse Machine: Lore, Industries, and World Design
 
 **Collapse Machine** is a co-op sci-fi FPS set on a broken, post-colonial planet. Players travel across strange, terraformed planet — fighting, exploring, stealing, or salvaging—then return to their mobile base to regroup and push forward again. Everything in the world is raw, grounded, and built to feel like you were dropped into a machine that’s still collapsing.
 

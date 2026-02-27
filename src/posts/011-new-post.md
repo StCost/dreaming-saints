@@ -1,4 +1,4 @@
-# COLLAPSE MACHINE — Devblog
+# #6 COLLAPSE MACHINE — Devblog
 
 A quick look at what we built and polished this week.
 
